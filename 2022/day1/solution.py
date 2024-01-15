@@ -20,6 +20,7 @@ class CalorieFinder:
 
 
 if __name__  == "__main__":
+    
     input_path = "input.txt"
     caloriesFinder = CalorieFinder()
     caloriesByElf = caloriesFinder.parseCalories(input_path)
