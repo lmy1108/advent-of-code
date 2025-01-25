@@ -5,6 +5,7 @@ def parse_input(filename: str) -> list[list[int]]:
         grid = [[c for c in line] for line in lines]
     return grid 
 
+
 def part_one(grid: list[list[str]]) -> int:
     m, n = len(grid), len(grid[0])
     queue = collections.deque()
