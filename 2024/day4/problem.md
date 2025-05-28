@@ -44,4 +44,4 @@ S.S.S.S.SS
 .X.X.XMASX
 ```
 
-Take a look at the little Elf's word search. How many times does XMAS appear?
+TakE a look at the little Elf's word search. How many times does XMAS appear?
