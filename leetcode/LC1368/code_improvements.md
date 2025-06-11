@@ -12,7 +12,7 @@ I can see several issues in your solution. Let me help you understand the proble
    - This will cause you to skip processing `(0,0)`
 
 3. **Missing boundary checks:**
-   - You need to check if `next_x` and `next_y` are within grid bounds
+- You need to check if `next_x` and `next_y` are within grid bounds
 
 4. **Incorrect heap operations:**
    - Should be `heapq.heappush(queue, (cost, next_x, next_y))`
@@ -84,3 +84,56 @@ def minCost(self, grid: List[List[int]]) -> int:
 ```
 
 The key insight is that this is a shortest path problem with weights 0 and 1, making it perfect for either Dijkstra's algorithm or the more efficient 0-1 BFS.
+
+You're thinking about it correctly! There's actually a confusing aspect about how the problem describes prerequisites. Let me clarify:
+
+## Understanding the Problem Statement
+
+From the problem: "prerequisites[i] = [ai, bi] indicates that you **must take course ai first** if you want to take course bi"
+
+So `[1, 0]` means: "take course 1 first, then you can take course 0"
+- Course 1 is a prerequisite of course 0
+- Course 0 depends on course 1
+- Edge direction: 1 → 0
+
+## Why Your Confusion is Valid
+
+You're right that in `[1, 0]`:
+- Course 0 has course 1 as a prerequisite
+- So course 0's indegree should increase!
+
+The solution I showed does exactly that:
+```python
+for pre in prerequisites:
+    adj[pre[0]].append(pre[1])  # 1 → 0
+    indegrees[pre[1]] += 1      # indegree of 0 increases
+```
+
+## Your Original Code Was Actually Correct in Spirit!
+
+Looking back at your code:
+```python
+pre_map[pre[1]].add(pre[0])  # You stored: "0 has prerequisite 1"
+indegrees[pre[0]] += 1       # But increased indegree of 1 (wrong)
+```
+
+The issue was just the mismatch between your graph representation and indegree calculation.
+
+## Two Valid Approaches:
+
+**Approach 1 (Forward edges - what most solutions use):**
+```python
+# Build: prerequisite → course
+adj[pre[0]].append(pre[1])  # 1 → 0
+indegrees[pre[1]] += 1      # indegree of 0
+```
+
+**Approach 2 (Backward edges - what you tried):**
+```python
+# Build: course → its prerequisites  
+prereq_lists[pre[1]].add(pre[0])  # 0 → 1 (reverse)
+outdegrees[pre[1]] += 1           # outdegree of 0
+# Then do reverse topological sort starting from nodes with outdegree 0
+```
+
+Your original approach mixed these two, which caused the bug. The standard approach is #1 because it aligns with typical topological sort, but your intuition about the relationships was correct!
